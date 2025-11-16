@@ -39,7 +39,7 @@ func _physics_process(delta: float) -> void:
 	var camera_basis = Transform3D(Basis(Vector3.UP, camera_pivot.rotation.y), Vector3.ZERO).basis
 	direction = (camera_basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	
-	is_sprinting = Input.is_action_pressed("sprint") and input_dir != Vector2.ZERO
+	is_sprinting = Input.is_action_pressed("sprint") and input_dir != Vector2.ZERO and is_on_floor()
 	
 	var current_speed: float = sprint_speed if is_sprinting else speed
 	
