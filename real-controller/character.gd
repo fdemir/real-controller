@@ -10,6 +10,7 @@ var input_dir: Vector2 = Vector2.ZERO
 var direction: Vector3 = Vector3.ZERO
 
 func _physics_process(delta: float) -> void:
+	
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
