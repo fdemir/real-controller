@@ -48,6 +48,11 @@ The controller exposes several export variables for customization:
 - **Movement**: Speed, sprint speed, jump velocity
 - **Camera**: Mouse sensitivity, tilt limit, rotation speed
 
+
+## Credits
+
+Animations and the Mesh are from the [Basic Motions Free](https://kevdev.itch.io/basic-motions-free).
+
 ## License
 
 MIT License - See [LICENCE](LICENCE) file for details.
