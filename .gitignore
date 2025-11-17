@@ -1,5 +1,8 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
-godot-steam/
-steam-multiplayer-peer/
+
+# Godot-specific ignores
+.import/
+export.cfg
+export_presets.cfg
