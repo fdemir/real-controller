@@ -16,6 +16,8 @@ extends CharacterBody3D
 
 @export_group("Movement")
 @export_range(0.1, 20.0, 0.1, "or_greater") var speed: float = 5.0
+## Speed when walking. Should be lower than normal speed.
+@export_range(0.1, 10.0, 0.1, "or_greater") var walk_speed: float = 2.5
 ## Speed multiplier when sprinting. Should be higher than normal speed.
 @export_range(0.1, 30.0, 0.1, "or_greater") var sprint_speed: float = 8.0
 ## Vertical velocity applied when jumping.
@@ -36,6 +38,7 @@ extends CharacterBody3D
 var input_dir: Vector2 = Vector2.ZERO
 var direction: Vector3 = Vector3.ZERO
 var is_sprinting: bool = false
+var is_walking: bool = false
 var is_jumping: bool = false
 
 func _ready() -> void:
@@ -72,10 +75,19 @@ func _handle_movement_input() -> void:
 func _handle_character_rotation(delta: float) -> void:
 	character.rotation.y = lerp_angle(character.rotation.y, camera_pivot.rotation.y + PI, rotation_speed * delta)
 
-## Applies horizontal movement velocity based on input and sprint state.
+## Applies horizontal movement velocity based on input and sprint/walk state.
 func _apply_movement() -> void:
-	is_sprinting = Input.is_action_pressed("sprint") and input_dir != Vector2.ZERO and is_on_floor()
-	var current_speed: float = sprint_speed if is_sprinting else speed
+	var is_moving = input_dir != Vector2.ZERO and is_on_floor()
+	is_sprinting = Input.is_action_pressed("sprint") and is_moving and not Input.is_action_pressed("walk")
+	is_walking = Input.is_action_pressed("walk") and is_moving and not Input.is_action_pressed("sprint")
+	
+	var current_speed: float
+	if is_sprinting:
+		current_speed = sprint_speed
+	elif is_walking:
+		current_speed = walk_speed
+	else:
+		current_speed = speed
 	
 	if direction:
 		velocity.x = direction.x * current_speed
