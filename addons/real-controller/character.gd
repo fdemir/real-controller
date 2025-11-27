@@ -2,12 +2,18 @@
 ## Requires a CameraPivot (Node3D) and Camera3D as children, and a character mesh as a child node.
 extends CharacterBody3D
 
+enum CameraMode {
+	FIRST_PERSON,
+	THIRD_PERSON
+}
+
 ## Node References
 ## -----------------------------------------------------------------------------
 ## These nodes must exist in the scene tree for the controller to work properly.
 
 @onready var camera_pivot: Node3D = %CameraPivot
 @onready var camera_3d: Camera3D = %Camera3D
+@onready var spring_arm: SpringArm3D = camera_pivot.get_node("SpringArm3D")
 @onready var character: Node3D = $character
 
 ## Movement Settings
@@ -35,6 +41,18 @@ extends CharacterBody3D
 @export_range(0.0, 1.57, 0.01) var tilt_limit: float = deg_to_rad(75)
 ## Speed at which the character mesh rotates to face movement direction.
 @export_range(0.1, 50.0, 0.1) var rotation_speed: float = 10.0
+## Camera mode: FIRST_PERSON or THIRD_PERSON.
+@export var camera_mode: CameraMode = CameraMode.THIRD_PERSON:
+	set(value):
+		camera_mode = value
+		if is_node_ready():
+			_update_camera_mode()
+## Camera distance (SpringArm length) for third-person mode.
+@export_range(0.0, 10.0, 0.1) var camera_distance: float = 3.5
+## Speed at which the camera transitions between modes.
+@export_range(1.0, 20.0, 0.1) var camera_transition_speed: float = 8.0
+## Allow switching between camera modes with V key.
+@export var allow_camera_mode_switch: bool = false
 
 var input_dir: Vector2 = Vector2.ZERO
 var direction: Vector3 = Vector3.ZERO
@@ -45,12 +63,20 @@ var is_jumping: bool = false
 # Freeze the character. It may be useful when you want to pause the character.
 var frozen: bool = false
 
+var target_camera_distance: float = 3.5
+var is_transitioning_camera: bool = false
+
 func _ready() -> void:
 	## Captures the mouse cursor for first-person camera control.
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	target_camera_distance = 0.0 if camera_mode == CameraMode.FIRST_PERSON else camera_distance
+	spring_arm.spring_length = target_camera_distance
+	if character:
+		character.visible = camera_mode == CameraMode.THIRD_PERSON
 
 func _physics_process(delta: float) -> void:
 	_handle_gravity_and_jump(delta)
+	_handle_camera_transition(delta)
 
 	if frozen:
 		handle_frozen_movement()
@@ -58,7 +84,8 @@ func _physics_process(delta: float) -> void:
 		return
 
 	_handle_movement_input()
-	_handle_character_rotation(delta)
+	if camera_mode == CameraMode.THIRD_PERSON:
+		_handle_character_rotation(delta)
 	_apply_movement()
 	move_and_slide()
 
@@ -91,7 +118,27 @@ func _handle_movement_input() -> void:
 
 ## Rotates the character mesh to face the movement direction smoothly.
 func _handle_character_rotation(delta: float) -> void:
+	if camera_mode == CameraMode.FIRST_PERSON:
+		return
 	character.rotation.y = lerp_angle(character.rotation.y, camera_pivot.rotation.y + PI, rotation_speed * delta)
+
+## Handles smooth camera transition between modes.
+func _handle_camera_transition(delta: float) -> void:
+	spring_arm.spring_length = lerp(spring_arm.spring_length, target_camera_distance, camera_transition_speed * delta)
+	
+	if character and camera_distance > 0.0:
+		var transition_progress = spring_arm.spring_length / camera_distance
+		var visibility_threshold = 0.3
+		character.visible = transition_progress > visibility_threshold
+	elif character:
+		character.visible = camera_mode == CameraMode.THIRD_PERSON
+
+## Updates camera mode (sets target for smooth transition).
+func _update_camera_mode() -> void:
+	if camera_mode == CameraMode.FIRST_PERSON:
+		target_camera_distance = 0.0
+	else:
+		target_camera_distance = camera_distance
 
 ## Applies horizontal movement velocity based on input and sprint/walk state.
 func _apply_movement() -> void:
@@ -116,6 +163,10 @@ func _apply_movement() -> void:
 
 ## Handles mouse input for camera rotation with tilt limits.
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.physical_keycode == KEY_V and event.pressed and allow_camera_mode_switch:
+		camera_mode = CameraMode.THIRD_PERSON if camera_mode == CameraMode.FIRST_PERSON else CameraMode.FIRST_PERSON
+		_update_camera_mode()
+		return
 
 	if frozen:
 		return
