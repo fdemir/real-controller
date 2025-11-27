@@ -42,16 +42,33 @@ var is_sprinting: bool = false
 var is_walking: bool = false
 var is_jumping: bool = false
 
+# Freeze the character. It may be useful when you want to pause the character.
+var frozen: bool = false
+
 func _ready() -> void:
 	## Captures the mouse cursor for first-person camera control.
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 
 func _physics_process(delta: float) -> void:
 	_handle_gravity_and_jump(delta)
+
+	if frozen:
+		handle_frozen_movement()
+		move_and_slide()
+		return
+
 	_handle_movement_input()
 	_handle_character_rotation(delta)
 	_apply_movement()
 	move_and_slide()
+
+func handle_frozen_movement() -> void:
+	velocity.x = 0.0
+	velocity.z = 0.0
+	input_dir = Vector2.ZERO
+	is_sprinting = false
+	is_walking = false
+	return
 
 ## Handles gravity application and jump mechanics.
 func _handle_gravity_and_jump(delta: float) -> void:
@@ -61,7 +78,7 @@ func _handle_gravity_and_jump(delta: float) -> void:
 	else:
 		is_jumping = false
 
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+	if not frozen and Input.is_action_just_pressed("ui_accept") and is_on_floor():
 		velocity.y = jump_velocity
 		is_jumping = true
 
@@ -99,6 +116,9 @@ func _apply_movement() -> void:
 
 ## Handles mouse input for camera rotation with tilt limits.
 func _unhandled_input(event: InputEvent) -> void:
+
+	if frozen:
+		return
 
 	if event is InputEventKey and event.physical_keycode == KEY_ESCAPE:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
