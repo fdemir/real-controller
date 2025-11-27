@@ -54,6 +54,8 @@ The controller exposes several export variables for customization:
 - **Movement**: Speed, sprint speed, jump velocity
 - **Camera**: Mouse sensitivity, tilt limit, rotation speed
 
+If you think camera is too high or too low, you can change Y axis of the CameraPivot node. It will help you to adjust the camera height.
+
 
 ## Credits
 
