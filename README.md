@@ -6,6 +6,7 @@ Can be found on the [Store](https://store-beta.godotengine.org/asset/furkan-demi
 
 ## Features
 
+- **Camera Mode**: First-person and third-person camera modes
 - **Locomotion System**: Walk, run, and sprint with 8-directional movement blending
 - **Jump Mechanics**: Ground-based jumping with gravity handling
 - **Camera Controls**: Third-person camera with configurable tilt limits and mouse sensitivity
@@ -32,7 +33,7 @@ How to change the character model? - Real Controller | Godot 4.6 - [Youtube Vide
 The controller requires the following input actions to be configured in your project:
 
 1. Go to **Project > Project Settings > Input Map**
-2. Add the following actions with their corresponding recommended inputs:
+2. Add the following actions with their corresponding _recommended_ inputs:
 
 | Action | Keyboard 
 |--------|----------	
@@ -43,8 +44,9 @@ The controller requires the following input actions to be configured in your pro
 | `jump` | Space 	
 | `sprint` | Left Shift 	
 | `walk` | Left Alt
+| `camera_mode_switch` | V
 
-> **Note**: These input mappings are required for the controller to function properly. Make sure all actions are configured before running the scene.
+> **Note**: These input mappings are required for the controller to function properly. Make sure all actions are configured before running the scene. 
 
 
 ## Configuration
@@ -54,7 +56,7 @@ The controller exposes several export variables for customization:
 - **Movement**: Speed, sprint speed, jump velocity
 - **Camera**: Mouse sensitivity, tilt limit, rotation speed
 
-If you think camera is too high or too low, you can change Y axis of the CameraPivot node. It will help you to adjust the camera height.
+If you think camera is too high or too low, you can change Y axis of the CameraPivot node. It will help you to adjust the camera height. 
 
 
 ## Credits
