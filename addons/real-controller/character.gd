@@ -95,7 +95,6 @@ func handle_frozen_movement() -> void:
 	input_dir = Vector2.ZERO
 	is_sprinting = false
 	is_walking = false
-	return
 
 ## Handles gravity application and jump mechanics.
 func _handle_gravity_and_jump(delta: float) -> void:
@@ -105,7 +104,7 @@ func _handle_gravity_and_jump(delta: float) -> void:
 	else:
 		is_jumping = false
 
-	if not frozen and Input.is_action_just_pressed("ui_accept") and is_on_floor():
+	if not frozen and Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = jump_velocity
 		is_jumping = true
 
