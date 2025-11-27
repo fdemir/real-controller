@@ -197,6 +197,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		camera_pivot.rotation.y += -event.relative.x * mouse_sensitivity
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("camera_mode_switch") and allow_camera_mode_switch:
+	if InputMap.has_action("camera_mode_switch") and event.is_action_pressed("camera_mode_switch") and allow_camera_mode_switch:
 		camera_mode = CameraMode.THIRD_PERSON if camera_mode == CameraMode.FIRST_PERSON else CameraMode.FIRST_PERSON
 		_update_camera_mode()

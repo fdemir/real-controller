@@ -3,7 +3,6 @@ extends Node
 @onready var animation_tree: AnimationTree = $"../AnimationTree"
 @onready var playback = animation_tree.get("parameters/playback")
 @onready var player: CharacterBody3D = $".."
-@onready var camera: Camera3D = $"../Camera3D"
 
 var target_direction: Vector2 = Vector2.ZERO
 
