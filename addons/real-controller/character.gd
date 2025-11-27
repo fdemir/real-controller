@@ -37,6 +37,10 @@ enum CameraMode {
 @export_group("Camera")
 ## Mouse sensitivity for camera rotation. Higher values = faster rotation.
 @export_range(0.0, 1.0, 0.001) var mouse_sensitivity: float = 0.005
+## Enable controller support for camera look.
+@export var controller_support: bool = true
+## Controller stick sensitivity for camera rotation.
+@export_range(0.1, 10.0, 0.1) var controller_sensitivity: float = 2.0
 ## Maximum vertical camera tilt angle in radians (prevents over-rotation).
 @export_range(0.0, 1.57, 0.01) var tilt_limit: float = deg_to_rad(75)
 ## Speed at which the character mesh rotates to face movement direction.
@@ -55,6 +59,7 @@ enum CameraMode {
 @export var allow_camera_mode_switch: bool = false
 
 var input_dir: Vector2 = Vector2.ZERO
+var input_strength: float = 0.0
 var direction: Vector3 = Vector3.ZERO
 var is_sprinting: bool = false
 var is_walking: bool = false
@@ -77,6 +82,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_handle_gravity_and_jump(delta)
 	_handle_camera_transition(delta)
+	_handle_controller_camera(delta)
 
 	if frozen:
 		handle_frozen_movement()
@@ -111,6 +117,7 @@ func _handle_gravity_and_jump(delta: float) -> void:
 ## Processes movement input and calculates movement direction relative to camera.
 func _handle_movement_input() -> void:
 	input_dir = Input.get_vector("left", "right", "forward", "backward")
+	input_strength = minf(input_dir.length(), 1.0)
 	
 	var camera_basis = Transform3D(Basis(Vector3.UP, camera_pivot.rotation.y), Vector3.ZERO).basis
 	direction = (camera_basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
@@ -120,6 +127,18 @@ func _handle_character_rotation(delta: float) -> void:
 	if camera_mode == CameraMode.FIRST_PERSON:
 		return
 	character.rotation.y = lerp_angle(character.rotation.y, camera_pivot.rotation.y + PI, rotation_speed * delta)
+
+## Handles controller stick input for camera rotation.
+func _handle_controller_camera(delta: float) -> void:
+	if not controller_support or frozen:
+		return
+	if not InputMap.has_action("look_left") or not InputMap.has_action("look_right") or not InputMap.has_action("look_up") or not InputMap.has_action("look_down"):
+		return
+	var look_dir = Input.get_vector("look_left", "look_right", "look_up", "look_down")
+	if look_dir != Vector2.ZERO:
+		camera_pivot.rotation.y -= look_dir.x * controller_sensitivity * delta
+		camera_pivot.rotation.x += look_dir.y * controller_sensitivity * delta
+		camera_pivot.rotation.x = clampf(camera_pivot.rotation.x, -tilt_limit, tilt_limit)
 
 ## Handles smooth camera transition between modes.
 func _handle_camera_transition(delta: float) -> void:
@@ -154,8 +173,8 @@ func _apply_movement() -> void:
 		current_speed = speed
 	
 	if direction:
-		velocity.x = direction.x * current_speed
-		velocity.z = direction.z * current_speed
+		velocity.x = direction.x * current_speed * input_strength
+		velocity.z = direction.z * current_speed * input_strength
 	else:
 		velocity.x = move_toward(velocity.x, 0, current_speed)
 		velocity.z = move_toward(velocity.z, 0, current_speed)

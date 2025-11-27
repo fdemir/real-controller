@@ -12,6 +12,7 @@ Can be found on the [Store](https://store-beta.godotengine.org/asset/furkan-demi
 - **Locomotion System**: Walk, run, and sprint with 8-directional movement blending
 - **Jump Mechanics**: Ground-based jumping with gravity handling
 - **Camera Controls**: Third-person camera with configurable tilt limits and mouse sensitivity
+- **Controller Support**: Full gamepad support with analog stick movement
 - **Animation System**: Smooth animation blending using AnimationTree
 - **Smooth Rotation**: Character mesh rotates smoothly to face movement direction
 
@@ -37,18 +38,22 @@ The controller requires the following input actions to be configured in your pro
 1. Go to **Project > Project Settings > Input Map**
 2. Add the following actions with their corresponding _recommended_ inputs:
 
-| Action | Keyboard 
-|--------|----------	
-| `forward` | W 	
-| `backward` | S 	
-| `left` | A 	
-| `right` | D 	
-| `jump` | Space 	
-| `sprint` | Left Shift 	
-| `walk` | Left Alt
-| `camera_mode_switch` | V
+| Action | Keyboard | Controller(Optional) |
+|--------|----------|------------|
+| `forward` | W | Left Stick Up |
+| `backward` | S | Left Stick Down |
+| `left` | A | Left Stick Left |
+| `right` | D | Left Stick Right |
+| `jump` | Space | A Button |
+| `sprint` | Left Shift | Right Trigger |
+| `walk` | Left Alt | - |
+| `camera_mode_switch` | V | - |
+| `look_up` | - | Right Stick Up |
+| `look_down` | - | Right Stick Down |
+| `look_left` | - | Right Stick Left |
+| `look_right` | - | Right Stick Right |
 
-> **Note**: These input mappings are required for the controller to function properly. Make sure all actions are configured before running the scene. 
+> **Note**: These input mappings are required for the controller to function properly. Make sure all actions are configured before running the scene. Controller support can be toggled via the `controller_support` export variable.
 
 
 ## Configuration
@@ -56,7 +61,7 @@ The controller requires the following input actions to be configured in your pro
 The controller exposes several export variables for customization:
 
 - **Movement**: Speed, sprint speed, jump velocity
-- **Camera**: Mouse sensitivity, tilt limit, rotation speed
+- **Camera**: Mouse sensitivity, controller sensitivity, tilt limit, rotation speed, controller support toggle
 
 If you think camera is too high or too low, you can change Y axis of the CameraPivot node. It will help you to adjust the camera height. 
 
