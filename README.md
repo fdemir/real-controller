@@ -4,7 +4,7 @@ A third-person character controller for Godot 4.6 with smooth locomotion, camera
 
 Can be found on the [Store](https://store-beta.godotengine.org/asset/furkan-demir/real-controller/) or the [Asset Library](https://godotengine.org/asset-library/asset/furkan-demir/real-controller/).
 
-![Example]gif(example.gif)
+![Example](example.gif)
 
 ## Features
 
