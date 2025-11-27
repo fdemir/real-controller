@@ -77,6 +77,8 @@ Animations and the Mesh are from the [Basic Motions Free](https://kevdev.itch.io
 - [x] Change mesh guide
 - [x] Walk
 - [ ] Crouch
+- [ ] Release mouse when character exits the tree
+- [ ] When mouse is not captured, do not handle camera rotation
 
 ## License
 
