@@ -181,7 +181,6 @@ func _apply_movement() -> void:
 
 ## Handles mouse input for camera rotation with tilt limits.
 func _unhandled_input(event: InputEvent) -> void:
-
 	if frozen:
 		return
 
@@ -200,3 +199,7 @@ func _input(event: InputEvent) -> void:
 	if InputMap.has_action("camera_mode_switch") and event.is_action_pressed("camera_mode_switch") and allow_camera_mode_switch:
 		camera_mode = CameraMode.THIRD_PERSON if camera_mode == CameraMode.FIRST_PERSON else CameraMode.FIRST_PERSON
 		_update_camera_mode()
+
+
+func _exit_tree() -> void:
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
