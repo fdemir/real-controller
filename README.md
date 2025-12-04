@@ -30,6 +30,16 @@ Can be found on the [Store](https://store-beta.godotengine.org/asset/furkan-demi
 
 How to change the character model? - Real Controller | Godot 4.6 - [Youtube Video](https://www.youtube.com/watch?v=2XPNGCYdZDw)
 
+### Optional: Fix Camera Jitter
+
+If you experience camera jitter (especially on 144Hz+ monitors):
+
+1. Go to **Project → Project Settings**
+2. Search for "physics_interpolation"  
+3. Enable **Physics > Common > Physics Interpolation**
+
+This enables Godot's built-in smooth camera movement.
+
 
 ### Input Map Configuration
 

@@ -84,6 +84,10 @@ look_down={
 ]
 }
 
+[physics]
+
+common/physics_interpolation=true
+
 [rendering]
 
 anti_aliasing/quality/msaa_2d=2
